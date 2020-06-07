@@ -1,6 +1,8 @@
 import java.math.*;
+import java.io.File;
 import java.io.FileWriter;  // Import the File class
 import java.io.IOException;  // Import the IOException class to handle errors
+import java.io.PrintWriter;
 
 public class BinaryFission {
 
@@ -26,7 +28,7 @@ public class BinaryFission {
 	
 	public void bacterialDeath() {
 		if(this.toxinLevel > 0.05*this.oxygenLevel) {
-			int change = (int) (Math.round(0.2*this.living));
+			int change = (int) (Math.round(0.5*this.living));
 			this.dead = this.dead + change;
 			this.living = this.living - change;
 		}
@@ -60,25 +62,29 @@ public class BinaryFission {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		int startingBacteria = Math.round((int) (10*Math.random()));
-		int startingOxygen = Math.round((int) (1000000000*startingBacteria));
+		int startingOxygen = Math.round((int) (10000000*startingBacteria));
 		BinaryFission bacteriaColony = new BinaryFission(startingBacteria, startingOxygen);
-		
+
 		try {
+			PrintWriter myWriter1 = new PrintWriter("binary_fission.csv");
+			myWriter1.write("");
+			myWriter1.close();
+			
 			FileWriter myWriter = new FileWriter("binary_fission.csv");
 	        int counter = 0;
 			while(bacteriaColony.living > 0) {
-				bacteriaColony.bacterialDeath();
-				bacteriaColony.metabolise();
 				bacteriaColony.binaryFission();
+				bacteriaColony.metabolise();
+				bacteriaColony.bacterialDeath();
 				myWriter.write(bacteriaColony.getLiving() + "," + bacteriaColony.getDead() + "," + bacteriaColony.getOxygen() + "," + bacteriaColony.getToxin());
 				myWriter.write("\r\n");
 				counter++;
 			}
-	    myWriter.close();
-	    System.out.println("Successfully wrote to the file.");
+			myWriter.close();
+			System.out.println("Successfully wrote to the file.");
 	    } catch (IOException e) {
-	      System.out.println("An error occurred.");
-	      e.printStackTrace();
+	    	System.out.println("An error occurred.");
+	        e.printStackTrace();
 	    }
 	}
 
